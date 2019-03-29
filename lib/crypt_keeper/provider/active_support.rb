@@ -24,6 +24,7 @@ module CryptKeeper
       #
       # Returns an encrypted string
       def encrypt(value)
+        return value
         encryptor.encrypt_and_sign(value)
       end
 

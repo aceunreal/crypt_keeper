@@ -105,11 +105,7 @@ to be used for encryption"
 
         transaction do
           tmp_table.find_each do |r|
-            crypt_keeper_fields.each do |field|
-              r.send("#{field}=", encryptor.decrypt(r[field])) if r[field].present?
-            end
-
-            r.save!
+            r.update_columns(number_reference: Transaction.find(r['id'])['number_reference']) if r['number_reference'].present?
           end
         end
       end
