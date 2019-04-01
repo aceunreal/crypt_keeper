@@ -84,17 +84,13 @@ to be used for encryption"
       # Public: Encrypt a table for the first time.
       def encrypt_table!
         tmp_table = Class.new(ActiveRecord::Base).tap do |c|
-          c.table_name = self.table_name
+          c.table_name = Transaction.table_name
           c.inheritance_column = :type_disabled
         end
 
         transaction do
           tmp_table.find_each do |r|
-            crypt_keeper_fields.each do |field|
-              r.send("#{field}=", encryptor.encrypt(r[field])) if r[field].present?
-            end
-
-            r.save!
+            r.update_columns(number_reference: encryptor.encrypt(r['number_reference'])) if r['number_reference'].present?
           end
         end
       end
