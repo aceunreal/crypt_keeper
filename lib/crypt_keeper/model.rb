@@ -85,6 +85,7 @@ to be used for encryption"
       def encrypt_table!
         tmp_table = Class.new(ActiveRecord::Base).tap do |c|
           c.table_name = self.table_name
+          c.primary_key = self.primary_key
           c.inheritance_column = :type_disabled
         end
 
@@ -101,7 +102,10 @@ to be used for encryption"
 
       # Public: Decrypt a table (reverse of encrypt_table!)
       def decrypt_table!
-        tmp_table = Class.new(ActiveRecord::Base).tap { |c| c.table_name = self.table_name }
+        tmp_table = Class.new(ActiveRecord::Base).tap do |c|
+          c.table_name = self.table_name
+          c.primary_key = self.primary_key
+        end
 
         transaction do
           tmp_table.find_each do |r|
