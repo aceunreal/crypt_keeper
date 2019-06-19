@@ -91,11 +91,12 @@ to be used for encryption"
 
         transaction do
           tmp_table.find_each do |r|
+            params = {}
             crypt_keeper_fields.each do |field|
-              r.send("#{field}=", encryptor.encrypt(r[field])) if r[field].present?
+              params.merge!(field => encryptor.encrypt(r[field])) if r[field].present?
             end
 
-            r.save!
+            r.update_columns(params) unless params.empty?
           end
         end
       end
